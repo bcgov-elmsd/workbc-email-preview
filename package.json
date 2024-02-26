@@ -1,0 +1,32 @@
+{
+  "name": "workbc-email-preview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgov-elmsd/workbc-email-preview.git"
+  },
+  "keywords": [
+    "reactjs",
+    "express",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcgov-elmsd/workbc-email-preview/issues"
+  },
+  "homepage": "https://github.com/bcgov-elmsd/workbc-email-preview#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-jest": "^27.9.0",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  }
+}
