@@ -156,11 +156,6 @@ parameters:
     name: NAMESPACE
     required: true
     value: ""
-  - description: A name suffix used for all objects
-    displayName: Suffix
-    name: SUFFIX
-    required: false
-    value: ""
   - description: Tag used for the image tags
     displayName: tag
     name: TAG
@@ -176,13 +171,28 @@ parameters:
     name: SOURCE_REPOSITORY_REF
     required: true
     value: next-claims
-  - description: SOURCE_CONTEXT_DIR
-    displayName: SOURCE_CONTEXT_DIR
-    name: SOURCE_CONTEXT_DIR
-    required: true
-    value: /packages/form-api
   - description: NODE_JS_VERSION
     displayName: NODE_JS_VERSION
     name: NODE_JS_VERSION
     required: true
     value: "18"
+  - description: VITE_APP_KEYCLOAK_REALM
+    displayName: VITE_APP_KEYCLOAK_REALM
+    name: VITE_APP_KEYCLOAK_REALM
+    required: true
+    value: ""
+  - description: VITE_APP_KEYCLOAK_CLIENT_ID
+    displayName: VITE_APP_KEYCLOAK_CLIENT_ID
+    name: VITE_APP_KEYCLOAK_CLIENT_ID
+    required: true
+    value: ""
+  - description: VITE_APP_KEYCLOAK_URL
+    displayName: VITE_APP_KEYCLOAK_URL
+    name: VITE_APP_KEYCLOAK_URL
+    required: true
+    value: ""
+  - description: VITE_APP_API_URL
+    displayName: VITE_APP_API_URL
+    name: VITE_APP_API_URL
+    required: true
+    value: ""
