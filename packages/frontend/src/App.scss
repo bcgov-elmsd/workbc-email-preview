@@ -1,0 +1,7 @@
+$bcgov-font-path: "node_modules/@bcgov/bootstrap-theme/dist/fonts/";
+@import "node_modules/@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
+
+#root {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}

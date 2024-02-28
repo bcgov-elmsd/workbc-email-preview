@@ -1,0 +1,30 @@
+diff --git a/node_modules/@bcgov/bootstrap-theme/dist/scss/_common.scss b/node_modules/@bcgov/bootstrap-theme/dist/scss/_common.scss
+index 4f007f4..9b830d9 100644
+--- a/node_modules/@bcgov/bootstrap-theme/dist/scss/_common.scss
++++ b/node_modules/@bcgov/bootstrap-theme/dist/scss/_common.scss
+@@ -1,9 +1,9 @@
+ // Includes in this file should not define any CSS classes, it is only meant for
+ // defining variables and functions for use by isolated components
+ 
+-@import "~bootstrap/scss/functions";
++@import "bootstrap/scss/functions";
+ 
+ @import "variables";
+ 
+-@import "~bootstrap/scss/variables";
+-@import "~bootstrap/scss/mixins";
++@import "bootstrap/scss/variables";
++@import "bootstrap/scss/mixins";
+diff --git a/node_modules/@bcgov/bootstrap-theme/dist/scss/bootstrap-theme.scss b/node_modules/@bcgov/bootstrap-theme/dist/scss/bootstrap-theme.scss
+index 4050411..8c97366 100644
+--- a/node_modules/@bcgov/bootstrap-theme/dist/scss/bootstrap-theme.scss
++++ b/node_modules/@bcgov/bootstrap-theme/dist/scss/bootstrap-theme.scss
+@@ -2,7 +2,7 @@
+ @import "common";
+ 
+ // Now bring in the rest of bootstrap!
+-@import "~bootstrap/scss/bootstrap";
++@import "bootstrap/scss/bootstrap";
+ 
+ // Overrides of bootstrap classes
+ @import "overrides";
