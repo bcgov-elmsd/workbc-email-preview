@@ -9,7 +9,11 @@ import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
 import MainRouter from "./Router";
 
-const keycloak = new Keycloak("../keycloak.json");
+const keycloak = new Keycloak({
+  realm: import.meta.env.VITE_APP_KEYCLOAK_REALM || "",
+  url: import.meta.env.VITE_APP_KEYCLOAK_URL || "",
+  clientId: import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID || "",
+});
 
 const keycloakProviderInitConfig = {
   // onLoad: 'check-sso',

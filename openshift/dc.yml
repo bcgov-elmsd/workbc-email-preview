@@ -1,0 +1,273 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: workbc-email-preview-template
+labels:
+  template: workbc-email-preview
+objects:
+  - apiVersion: v1
+    kind: Secret
+    type: Opaque
+    metadata:
+      name: ${NAME}-backend-secrets
+    stringData:
+      PORT: ${PORT}
+      AUTH_KEYCLOAK_CLIENT: ${AUTH_KEYCLOAK_CLIENT}
+      AUTH_KEYCLOAK_SERVER_URL: ${AUTH_KEYCLOAK_SERVER_URL}
+      AUTH_KEYCLOAK_REALM: ${AUTH_KEYCLOAK_REALM}
+      CHES_HOST: ${CHES_HOST}
+      COMMON_SERVICES_CLIENT: ${COMMON_SERVICES_CLIENT}
+      COMMON_SERVICES_CLIENT_SECRET: ${COMMON_SERVICES_CLIENT_SECRET}
+      COMMON_SERVICES_AUTH_REALM: ${COMMON_SERVICES_AUTH_REALM}
+      ORIGIN_URL: ${ORIGIN_URL}
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}-backend
+      labels:
+        app.kubernetes.io/part-of: workbc-email-preview
+        app.openshift.io/runtime: nodejs
+        deploymentconfig: ${NAME}-backend
+    spec:
+      replicas: ${{REPLICAS}}
+      selector:
+        deploymentconfig: ${NAME}-backend
+      strategy:
+        resources:
+          limits:
+            cpu: 20m
+            memory: 80Mi
+          requests:
+            cpu: 10m
+            memory: 65Mi
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            deploymentconfig: ${NAME}-backend
+        spec:
+          containers:
+            - env:
+                - name: PORT
+                  value: ${PORT}
+                - name: AUTH_KEYCLOAK_CLIENT
+                  value: ${AUTH_KEYCLOAK_CLIENT}
+                - name: AUTH_KEYCLOAK_SERVER_URL
+                  value: ${AUTH_KEYCLOAK_SERVER_URL}
+                - name: AUTH_KEYCLOAK_REALM
+                  value: ${AUTH_KEYCLOAK_REALM}
+                - name: CHES_HOST
+                  value: ${CHES_HOST}
+                - name: COMMON_SERVICES_CLIENT
+                  value: ${COMMON_SERVICES_CLIENT}
+                - name: COMMON_SERVICES_CLIENT_SECRET
+                  value: ${COMMON_SERVICES_CLIENT_SECRET}
+                - name: COMMON_SERVICES_AUTH_REALM
+                  value: ${COMMON_SERVICES_AUTH_REALM}
+                - name: ORIGIN_URL
+                  value: ${ORIGIN_URL}
+              image: ${NAME}-backend:${TAG}
+              livenessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 300
+                periodSeconds: 10
+                successThreshold: 1
+                tcpSocket:
+                  port: 5050
+                timeoutSeconds: 1
+              name: ${NAME}-backend
+              ports:
+                - containerPort: 5050
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 300
+                periodSeconds: 120
+                successThreshold: 1
+                tcpSocket:
+                  port: 5050
+                timeoutSeconds: 1
+              resources:
+                limits:
+                  cpu: 20m
+                  memory: 80Mi
+                requests:
+                  cpu: 10m
+                  memory: 65Mi
+      test: false
+      triggers:
+        - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}-backend
+            from:
+              kind: ImageStreamTag
+              name: ${NAME}-backend:${TAG}
+              namespace: ${IMAGE_NAMESPACE}
+          type: ImageChange
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}-frontend
+      labels:
+        app.kubernetes.io/part-of: workbc-email-preview
+        app.openshift.io/runtime: nginx
+        deploymentconfig: ${NAME}-frontend
+    spec:
+      replicas: ${{REPLICAS}}
+      selector:
+        deploymentconfig: ${NAME}-frontend
+      strategy:
+        resources:
+          limits:
+            cpu: 10m
+            memory: 75Mi
+          requests:
+            cpu: 5m
+            memory: 60Mi
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            deploymentconfig: ${NAME}-frontend
+        spec:
+          containers:
+            - env:
+                - name: NODE_ENV
+                  value: "PRODUCTION"
+              image: ${NAME}-frontend:${TAG}
+              livenessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 300
+                periodSeconds: 10
+                successThreshold: 1
+                tcpSocket:
+                  port: 5173
+                timeoutSeconds: 1
+              name: ${NAME}-frontend
+              ports:
+                - containerPort: 5173
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 120
+                periodSeconds: 120
+                successThreshold: 1
+                tcpSocket:
+                  port: 5173
+                timeoutSeconds: 1
+              resources:
+                limits:
+                  cpu: 10m
+                  memory: 75Mi
+                requests:
+                  cpu: 5m
+                  memory: 60Mi
+      test: false
+      triggers:
+        - type: ConfigChange
+        - imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}-frontend
+            from:
+              kind: ImageStreamTag
+              name: ${NAME}-frontend:${TAG}
+              namespace: ${IMAGE_NAMESPACE}
+          type: ImageChange
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}-frontend
+    spec:
+      ports:
+        - name: ${NAME}-frontend
+          port: 5173
+          protocol: TCP
+          targetPort: 5173
+      selector:
+        deploymentconfig: ${NAME}-frontend
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      creationTimestamp: null
+      name: ${NAME}-backend
+    spec:
+      ports:
+        - name: ${NAME}-backend
+          port: 5050
+          protocol: TCP
+          targetPort: 5050
+      selector:
+        deploymentconfig: ${NAME}-backend
+parameters:
+  - description: The name assigned to all of the frontend objects defined in this template.
+    displayName: Name
+    name: NAME
+    required: true
+    value: workbc-email-preview
+  - description: The image tag to be used for the frontend image.
+    displayName: Image Tag
+    name: TAG
+    required: true
+    value: latest
+  - description: The number of frontend pods to run.
+    displayName: Replicas
+    name: REPLICAS
+    required: true
+    value: "1"
+  - description: The namespace where the frontend image is located.
+    displayName: Image Namespace
+    name: IMAGE_NAMESPACE
+    required: true
+    value: ""
+  - description: The port the backend service is listening on.
+    displayName: Backend Port
+    name: PORT
+    required: true
+    value: "5050"
+  - description: The Keycloak client ID used for authentication.
+    displayName: Keycloak Client ID
+    name: AUTH_KEYCLOAK_CLIENT
+    required: true
+    value: ""
+  - description: The Keycloak server URL used for authentication.
+    displayName: Keycloak Server URL
+    name: AUTH_KEYCLOAK_SERVER_URL
+    required: true
+    value: ""
+  - description: The Keycloak realm used for authentication.
+    displayName: Keycloak Realm
+    name: AUTH_KEYCLOAK_REALM
+    required: true
+    value: ""
+  - description: The CHES host used for sending emails.
+    displayName: CHES Host
+    name: CHES_HOST
+    required: true
+    value: ""
+  - description: The client ID used for authenticating with common services.
+    displayName: Common Services Client ID
+    name: COMMON_SERVICES_CLIENT
+    required: true
+    value: ""
+  - description: The client secret used for authenticating with common services.
+    displayName: Common Services Client Secret
+    name: COMMON_SERVICES_CLIENT_SECRET
+    required: true
+    value: ""
+  - description: The realm used for authenticating with common services.
+    displayName: Common Services Auth Realm
+    name: COMMON_SERVICES_AUTH_REALM
+    required: true
+    value: ""
+  - description: The URL of the frontend application.
+    displayName: Origin URL
+    name: ORIGIN_URL
+    required: true
+    value: ""
