@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { createHTMLEmail } from "../utils/htmlEmail";
 import Preview from "../components/Preview";
 import CodeEditorArray from "../components/CodeEditorArray";
 import Modal from "../components/Modal";
+import apiService from "../service/api-service";
 import { useKeycloak } from "@react-keycloak/web";
 
 interface HTMLInputEvent extends Event {
@@ -15,6 +16,7 @@ function Home() {
   const [files, setFiles] = useState("");
   const [title, setTitle] = useState("Title");
   const [subject, setSubject] = useState("Subject");
+  const [email, setEmail] = useState("Email");
   const [mainValueArray, setMainValueArray] = useState(["<div>Start</div>"]); // [string, React.Dispatch<React.SetStateAction<string>>
   const [boxValueArray, setBoxValueArray] = useState(["<div>Box</div>"]);
   const [endValueArray, setEndValueArray] = useState(["<div>End</div>"]);
@@ -49,20 +51,30 @@ function Home() {
     };
   };
 
-  const sendEmail = async (html: string) => {
+  const sendEmail = async (html: string, subject: string, context: unknown) => {
     try {
       const token = keycloak.token;
       console.log("token", token);
-      const response = await axios.post(import.meta.env.VITE_APP_API_URL + "/email", {
-        body: {
-          html,
-        },
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log(response);
+      await apiService
+        .getAxiosInstance()
+        .post(
+          "/email",
+          {
+            html,
+            subject,
+            context,
+            email,
+          },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        });
     } catch (error) {
       console.error(error);
     }
@@ -75,7 +87,7 @@ function Home() {
       boxValueArray.map((value) => value.toString().replace(/(\r\n|\n|\r)/gm, "")),
       endValueArray.map((value) => value.toString().replace(/(\r\n|\n|\r)/gm, ""))
     );
-    sendEmail(html);
+    sendEmail(html, subject, {});
   };
 
   useEffect(() => {
@@ -100,6 +112,13 @@ function Home() {
             Import JSON text
           </button>
           <input className="btn btn-primary mt-3 ml-2" type="file" onChange={handleFileChange} />
+          <input
+            type="text"
+            className="mt-3 ml-2"
+            placeholder="Test Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <button className="btn btn-primary mt-3 ml-2" onClick={handleSendEmail}>
             Test email
           </button>
