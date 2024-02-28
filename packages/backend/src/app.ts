@@ -17,7 +17,7 @@ const kcConfig = {
   "confidential-port": process.env.AUTH_KEYCLOAK_CONFIDENTIAL_PORT || 0,
   "auth-server-url": process.env.AUTH_KEYCLOAK_SERVER_URL || "",
   resource: process.env.AUTH_KEYCLOAK_CLIENT || "",
-  "ssl-required": process.env.AUTH_KEYCLOAK_SSL_REQUIRED || "",
+  "ssl-required": "",
   "bearer-only": false,
   realm: process.env.AUTH_KEYCLOAK_REALM || "",
   clientSecret: process.env.AUTH_KEYCLOAK_CLIENT_SECRET || "",
