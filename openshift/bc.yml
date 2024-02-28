@@ -17,7 +17,6 @@ objects:
       creationTimestamp: null
       namespace: ${NAMESPACE}
       labels:
-        shared: true
         app: ${NAME}
         app.kubernetes.io/component: ${NAME}
         app.kubernetes.io/instance: ${NAME}
@@ -38,7 +37,6 @@ objects:
       creationTimestamp: null
       namespace: ${NAMESPACE}
       labels:
-        shared: true
         app: ${NAME}
         app.kubernetes.io/component: ${NAME}
         app.kubernetes.io/instance: ${NAME}
