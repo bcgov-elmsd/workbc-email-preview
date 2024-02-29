@@ -13,7 +13,7 @@ RUN npm run build
 # Bundle static assets with nginx
 FROM nginxinc/nginx-unprivileged:1.23-alpine AS production
 # Copy built assets from `builder` image
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /dist /usr/share/nginx/html
 # Add your nginx.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Expose port
