@@ -1,23 +1,45 @@
-FROM node:14-alpine AS builder
-# Set the working directory to /app inside the container
-ENV NODE_ENV=production
+##
+# Multi-stage docker container with build and server separated out
+##
+
+## Stage 1 - Build
+FROM node:14-alpine as build
+
 WORKDIR /app
-# Copy app files
-COPY . /app
-COPY tsconfig.json ./
-# Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
-RUN npm install --omit=dev
-# Build the app
+
+RUN apk update
+RUN apk add curl
+
+# Copy in build artifacts, build project dependencies
+
+COPY package*.json ./
+
+# Install package dependencies
+RUN npm install
+
+# copy all app contents to the container
+COPY . .
+
+# create the distribution
 RUN npm run build
 
-# Bundle static assets with nginx
-FROM nginxinc/nginx-unprivileged:1.23-alpine AS production
-# Copy built assets from `builder` image
-RUN ls -lR
-COPY --from=builder /dist /usr/share/nginx/html
-# Add your nginx.conf
+## Stage 2: Nginx state for serving content
+FROM nginx:alpine
+
+# copy custom nginx configuration from host to container
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-# Expose port
-EXPOSE 8082
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+
+# Set working directory to nginx asset directory
+WORKDIR /usr/share/nginx/html
+
+# Remove default nginx static assets
+RUN rm -rf ./*
+
+# Copy static assets from builder stage
+COPY --from=build /app/dist .
+
+# Provide nginx directory the required permissions
+RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
+
+# Containers run nginx with global directives and daemon off
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
