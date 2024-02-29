@@ -3,7 +3,7 @@
 ##
 
 ## Stage 1 - Build
-FROM node:14-alpine as build
+FROM node:16-alpine as build
 
 WORKDIR /app
 
@@ -22,6 +22,7 @@ COPY . .
 
 # create the distribution
 RUN npm run build
+WORKDIR /
 RUN ls -lR
 
 ## Stage 2: Nginx state for serving content
