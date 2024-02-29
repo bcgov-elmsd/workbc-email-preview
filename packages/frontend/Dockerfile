@@ -35,6 +35,7 @@ WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
+RUN --from=build ls -lR /app
 
 # Copy static assets from builder stage
 COPY --from=build /app/dist .
