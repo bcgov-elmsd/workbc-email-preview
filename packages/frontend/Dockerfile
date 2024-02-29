@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM node:14-alpine AS builder
 # Set the working directory to /app inside the container
 ENV NODE_ENV=production
 WORKDIR /app
