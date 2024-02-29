@@ -22,7 +22,7 @@ COPY . .
 
 # create the distribution
 RUN npm run build
-RUN ls -la
+RUN ls -lR
 
 ## Stage 2: Nginx state for serving content
 FROM nginx:alpine
