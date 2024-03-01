@@ -13,6 +13,7 @@ RUN apk add curl
 # Copy in build artifacts, build project dependencies
 
 COPY package*.json ./
+COPY patches ./patches
 
 # Install package dependencies
 RUN npm install
