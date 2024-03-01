@@ -13,7 +13,6 @@ RUN apk add curl
 # Copy in build artifacts, build project dependencies
 
 COPY package*.json ./
-COPY patches ./patches
 
 # Install package dependencies
 RUN npm install
@@ -35,6 +34,9 @@ WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
+
+# Copy static assets from builder stage
+COPY --from=build /app/dist .
 
 # Provide nginx directory the required permissions
 RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
