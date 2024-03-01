@@ -2,6 +2,8 @@ import "./App.scss";
 import { BrowserRouter as Router } from "react-router-dom";
 import Keycloak from "keycloak-js";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -38,6 +40,7 @@ function App() {
       onTokens={tokenLogger}
     >
       <Router>
+        <ToastContainer />
         <Navbar />
         <MainRouter />
         <Footer />

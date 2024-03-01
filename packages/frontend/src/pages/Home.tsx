@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast, Bounce } from "react-toastify";
 // import axios from "axios";
 import { createHTMLEmail } from "../utils/htmlEmail";
 import Preview from "../components/Preview";
@@ -54,7 +55,6 @@ function Home() {
   const sendEmail = async (html: string, subject: string, context: unknown) => {
     try {
       const token = keycloak.token;
-      console.log("token", token);
       await apiService
         .getAxiosInstance()
         .post(
@@ -74,6 +74,31 @@ function Home() {
         )
         .then((response) => {
           console.log(response);
+          toast.success("📨 Email Sent!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("😔 Email Failed! " + error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
         });
     } catch (error) {
       console.error(error);

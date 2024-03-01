@@ -8,15 +8,10 @@ class APIService {
     this.client = axios.create({
       baseURL: import.meta.env.VITE_APP_API_URL + "/api",
     });
-    this.client.interceptors.response.use(
-      (config) => {
-        console.info(`received response status: ${config.status} , data: ${config.data}`);
-        return config;
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
+    this.client.interceptors.response.use((config) => {
+      console.info(`received response status: ${config.status} , data: ${config.data}`);
+      return config;
+    });
   }
 
   public getAxiosInstance(): AxiosInstance {
