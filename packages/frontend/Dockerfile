@@ -23,8 +23,6 @@ COPY . .
 
 # create the distribution
 RUN npm run build
-WORKDIR /
-RUN ls -lR
 
 ## Stage 2: Nginx state for serving content
 FROM nginx:alpine
@@ -37,10 +35,6 @@ WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
 RUN rm -rf ./*
-RUN --from=build ls -lR /app
-
-# Copy static assets from builder stage
-COPY --from=build /app/dist .
 
 # Provide nginx directory the required permissions
 RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
