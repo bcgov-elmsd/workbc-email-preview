@@ -6,7 +6,7 @@ class APIService {
 
   constructor() {
     this.client = axios.create({
-      baseURL: "/api",
+      baseURL: import.meta.env.VITE_APP_API_URL + "/api",
     });
     this.client.interceptors.response.use(
       (config) => {
